@@ -146,7 +146,7 @@ markup:
     renderer:
       unsafe: true
 sitemap:
-  changeFreq: ""
+  changeFreq: "daily"
   disable: false
   filename: sitemap.xml
   priority: -1
