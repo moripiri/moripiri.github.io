@@ -2,43 +2,71 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on mori-blog</title>
-    <link>https://moripiri.github.io/tags/</link>
+    <link>http://localhost:1314/tags/</link>
     <description>Recent content in Tags on mori-blog</description>
     <image>
       <title>mori-blog</title>
-      <url>https://moripiri.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://moripiri.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://localhost:1314/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1314/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- 0.147.8</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Jul 2025 11:30:03 +0000</lastBuildDate>
-    <atom:link href="https://moripiri.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1314/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Inference Scaling</title>
+      <link>http://localhost:1314/tags/inference-scaling/</link>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1314/tags/inference-scaling/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LLM</title>
+      <link>http://localhost:1314/tags/llm/</link>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1314/tags/llm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Long Context</title>
+      <link>http://localhost:1314/tags/long-context/</link>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1314/tags/long-context/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Paper Review</title>
+      <link>http://localhost:1314/tags/paper-review/</link>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1314/tags/paper-review/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Game</title>
-      <link>https://moripiri.github.io/tags/game/</link>
+      <link>http://localhost:1314/tags/game/</link>
       <pubDate>Tue, 15 Jul 2025 11:30:03 +0000</pubDate>
-      <guid>https://moripiri.github.io/tags/game/</guid>
+      <guid>http://localhost:1314/tags/game/</guid>
       <description></description>
     </item>
     <item>
       <title>Vibe Coding</title>
-      <link>https://moripiri.github.io/tags/vibe-coding/</link>
+      <link>http://localhost:1314/tags/vibe-coding/</link>
       <pubDate>Tue, 15 Jul 2025 11:30:03 +0000</pubDate>
-      <guid>https://moripiri.github.io/tags/vibe-coding/</guid>
+      <guid>http://localhost:1314/tags/vibe-coding/</guid>
       <description></description>
     </item>
     <item>
       <title>Hugo</title>
-      <link>https://moripiri.github.io/tags/hugo/</link>
+      <link>http://localhost:1314/tags/hugo/</link>
       <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
-      <guid>https://moripiri.github.io/tags/hugo/</guid>
+      <guid>http://localhost:1314/tags/hugo/</guid>
       <description></description>
     </item>
     <item>
       <title>RL</title>
-      <link>https://moripiri.github.io/tags/rl/</link>
+      <link>http://localhost:1314/tags/rl/</link>
       <pubDate>Sun, 15 Jun 2025 11:30:03 +0000</pubDate>
-      <guid>https://moripiri.github.io/tags/rl/</guid>
+      <guid>http://localhost:1314/tags/rl/</guid>
       <description></description>
     </item>
   </channel>
