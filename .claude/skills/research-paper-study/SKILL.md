@@ -97,18 +97,16 @@ Example questions to anticipate:
 - "What are the practical applications?"
 - "What experiments did they run?"
 
-### Phase 4: Extract Important Figures (Optional)
+### Phase 4: Extract Important Figures
 
-If user wants to include figures from the paper:
+If figures are needed:
+1. Run `scripts/extract_pdf_images.py`
+2. Filter by size (default `--min-size-kb 20`)
+3. Show extracted images with page numbers.
+4. Ask user which figures to keep (e.g., “1, 3, 5”).
 
-1. Run `scripts/extract_pdf_images.py` on the PDF
-2. Filter images by size (default: >20KB to exclude logos/icons)
-3. Show extracted images to user with page numbers
-4. Ask: "Which figures are important for your notes?" (e.g., "1, 3, 5")
-5. Prepare selected images for inclusion in notes
-
-**Image naming convention:**
-- `{arxiv-id}-fig{N}.{ext}` (e.g., `1706.03762-fig1.png`)
+Naming convention:
+- `{arxiv-id}-fig{N}.{ext}`
 
 ### Phase 5: Compile Study Notes
 

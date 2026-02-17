@@ -1,7 +1,6 @@
 ---
 title: "Sutton의 RL 책 한 장 요약"
 date: 2025-06-15T11:30:03+00:00
-weight: 1
 # aliases: ["/first"]
 tags: ["RL"]
 author: "mori"

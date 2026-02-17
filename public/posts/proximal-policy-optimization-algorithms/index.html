@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=54972&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Proximal Policy Optimization Algorithms 요약 | mori-blog</title>
+<meta name="keywords" content="Paper Review, Reinforcement Learning, Policy Gradient">
+<meta name="description" content="TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약">
+<meta name="author" content="mori">
+<link rel="canonical" href="http://localhost:54972/posts/proximal-policy-optimization-algorithms/">
+<meta name="google-site-verification" content="googleccca69acea2b3187">
+<meta name="yandex-verification" content="XYZabc">
+<meta name="msvalidate.01" content="XYZabc">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2211ca3164be7830024f6aad2b3a2e520843a64f8f048445c3401c1249aa051d.css" integrity="sha256-IhHKMWS&#43;eDACT2qtKzouUghDpk&#43;PBIRFw0AcEkmqBR0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:54972/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:54972/%3Clink%20/%20abs%20url%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:54972/%3Clink%20/%20abs%20url%3E">
+<link rel="apple-touch-icon" href="http://localhost:54972/%3Clink%20/%20abs%20url%3E">
+<link rel="mask-icon" href="http://localhost:54972/%3Clink%20/%20abs%20url%3E">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:54972/posts/proximal-policy-optimization-algorithms/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false},
+      {left: '\\[', right: '\\]', display: true}
+    ]
+  });"></script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-18KKC7TB58"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-18KKC7TB58');
+        }
+      </script><meta property="og:url" content="http://localhost:54972/posts/proximal-policy-optimization-algorithms/">
+  <meta property="og:site_name" content="mori-blog">
+  <meta property="og:title" content="Proximal Policy Optimization Algorithms 요약">
+  <meta property="og:description" content="TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-02-17T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-02-17T00:00:00+00:00">
+    <meta property="article:tag" content="Paper Review">
+    <meta property="article:tag" content="Reinforcement Learning">
+    <meta property="article:tag" content="Policy Gradient">
+      <meta property="og:image" content="http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name="twitter:title" content="Proximal Policy Optimization Algorithms 요약">
+<meta name="twitter:description" content="TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:54972/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Proximal Policy Optimization Algorithms 요약",
+      "item": "http://localhost:54972/posts/proximal-policy-optimization-algorithms/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Proximal Policy Optimization Algorithms 요약",
+  "name": "Proximal Policy Optimization Algorithms 요약",
+  "description": "TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약",
+  "keywords": [
+    "Paper Review", "Reinforcement Learning", "Policy Gradient"
+  ],
+  "articleBody": " 🤖 AI Summary Notice 이 글은 AI가 논문을 읽고 작성한 요약입니다. 부정확한 내용이 있을 수 있으니, 정확한 정보는 원문을 참고해주세요.\n저자: John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov\n발행년도: 2017\n링크: https://arxiv.org/abs/1707.06347\n문제 정의 정책경사(Policy Gradient) 계열은 (1) 데이터 효율/안정성이 떨어지거나(바닐라 PG), (2) 안정성은 좋지만 구현과 제약이 복잡(TRPO)하다는 trade-off가 있다.\n바닐라 PG: 동일한 샘플로 여러 번 업데이트하면 policy shift가 커져 성능이 무너질 수 있음. TRPO: surrogate objective를 KL 제약 하에서 최적화하여 안정성을 확보하지만, 2차 근사/CG/라인서치 등 구현이 복잡. PPO는 TRPO의 안정성에 가까운 업데이트를, 1차 최적화(Adam + minibatch) 만으로 쉽게 구현하는 것을 목표로 한다.\n핵심 기여 Clipped Surrogate Objective로 큰 정책 업데이트를 억제하면서도, 동일한 배치로 여러 epoch 업데이트를 가능하게 함. 다양한 벤치마크에서 샘플 효율·단순성·벽시계시간 균형이 좋음을 보임. 방법론 (A) TRPO 스타일 ratio surrogate (r_t(\\theta)=\\pi_\\theta(a_t\\mid s_t)/\\pi_{\\theta_{old}}(a_t\\mid s_t)) 로 두면, CPI surrogate: [ L^{CPI}(\\theta)=\\mathbb{E}_t[r_t(\\theta)\\hat A_t] ]\n(B) PPO clipped objective [ L^{CLIP}(\\theta)=\\mathbb{E}_t[\\min(r_t(\\theta)\\hat A_t,;\\mathrm{clip}(r_t(\\theta),1-\\epsilon,1+\\epsilon)\\hat A_t)] ]\nFigure 1. advantage 부호에 따라 확률비 r를 [1-ε, 1+ε] 범위로 clipping하여 surrogate term을 보수적으로 제한.\nFigure 2. 업데이트 방향으로 보간할 때 surrogate 및 KL의 변화를 비교. L^CLIP이 L^CPI에 대한 보수적 하한처럼 동작.\n(C) Actor-Critic 결합 (Value/Entropy) [ L(\\theta)=\\mathbb{E}_t[L^{CLIP}_t(\\theta) - c_1 L^{VF}_t(\\theta) + c_2 S\\pi_\\theta] ]\nAdvantage는 TD residual과 (truncated) GAE로 계산: [ \\delta_t=r_t+\\gamma V(s_{t+1})-V(s_t),\\quad \\hat A_t=\\delta_t+(\\gamma\\lambda)\\delta_{t+1}+\\cdots ]\n학습은 N actor × T steps rollout으로 NT 샘플을 모은 뒤, 같은 배치로 K epochs 동안 minibatch(크기 M) Adam/SGD.\n실험 결과 Figure 3. 여러 MuJoCo 환경에서 알고리즘 비교. PPO가 전반적으로 강한 성능/안정성.\nFigure 4. Roboschool humanoid 3D 과제에서 PPO 학습 곡선.\nFigure 5. 학습된 정책의 스틸 프레임(qualitative).\nFigure 6. Atari 49개 게임에서 PPO와 A2C 비교(샘플 효율 관점).\n계산/구현 포인트 TRPO 대비: 2차 근사/CG/라인서치 없이 일반적인 딥러닝 학습 루프로 구현 가능. 안정성은 주로 (\\epsilon), epoch 수 K, minibatch 크기 M, 그리고 advantage 추정((\\gamma,\\lambda))에 민감. 실무에서는 KL 모니터링(또는 KL 기반 early stop)을 추가하면 안정화에 도움이 된다. 한계 / 주의점 clipping이 trust region을 완벽 대체하는 것은 아니며, (\\epsilon) 및 data reuse(K)가 과하면 여전히 불안정 가능. on-policy 특성상 환경 상호작용 비용이 큰 문제에서는 샘플 효율 한계가 존재. 인사이트 PPO는 “고정된 배치로 여러 번 학습하고 싶은” 엔지니어링 요구를, TRPO의 아이디어를 유지하면서도 매우 단순한 형태로 풀어낸 해법. ratio clipping은 gradient 신호를 특정 구간에서 잘라내 업데이트 폭을 제한하는 강력한 규제(reg.)로 동작. References PPO: https://arxiv.org/abs/1707.06347 TRPO: https://arxiv.org/abs/1502.05477 GAE: https://arxiv.org/abs/1506.02438 A3C: https://arxiv.org/abs/1602.01783 ACER: https://arxiv.org/abs/1611.01224 DQN: https://www.nature.com/articles/nature14236 ",
+  "wordCount" : "369",
+  "inLanguage": "en",
+  "image": "http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished": "2026-02-17T00:00:00Z",
+  "dateModified": "2026-02-17T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "mori"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:54972/posts/proximal-policy-optimization-algorithms/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "mori-blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:54972/%3Clink%20/%20abs%20url%3E"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:54972/" accesskey="h" title="Mori&#39;s blog (Alt + H)">
+                <img src="http://localhost:54972/apple-touch-icon.png" alt="" aria-label="logo"
+                    height="35">Mori&#39;s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:54972/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:54972/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:54972/search/" title="search (Alt &#43; /)" accesskey=/>
+                    <span>search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR+zwDAROtph0PXGte6ia8heboACF9R5l/DiY+WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous">
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8+w2LAIftJEULZABrF9PPFv+tVkH" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js" integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB+w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+<script type="module">
+    import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.mjs";
+    renderMathInElement(document.body);
+</script>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Proximal Policy Optimization Algorithms 요약
+    </h1>
+    <div class="post-description">
+      TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약
+    </div>
+    <div class="post-meta"><span title='2026-02-17 00:00:00 +0000 UTC'>February 17, 2026</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;369 words&nbsp;·&nbsp;mori&nbsp;|&nbsp;<a href="https://github.com/moripiri/moripiri.github.io/issues" rel="noopener noreferrer edit" target="_blank">Suggest Changes</a>
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#문제-정의">문제 정의</a></li>
+    <li><a href="#핵심-기여">핵심 기여</a></li>
+    <li><a href="#방법론">방법론</a>
+      <ul>
+        <li><a href="#a-trpo-스타일-ratio-surrogate">(A) TRPO 스타일 ratio surrogate</a></li>
+        <li><a href="#b-ppo-clipped-objective">(B) PPO clipped objective</a></li>
+        <li><a href="#c-actor-critic-결합-valueentropy">(C) Actor-Critic 결합 (Value/Entropy)</a></li>
+      </ul>
+    </li>
+    <li><a href="#실험-결과">실험 결과</a></li>
+    <li><a href="#계산구현-포인트">계산/구현 포인트</a></li>
+    <li><a href="#한계--주의점">한계 / 주의점</a></li>
+    <li><a href="#인사이트">인사이트</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p><strong>🤖 AI Summary Notice</strong>
+이 글은 AI가 논문을 읽고 작성한 요약입니다. 부정확한 내용이 있을 수 있으니, 정확한 정보는 원문을 참고해주세요.</p>
+</blockquote>
+<p><strong>저자:</strong> John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov<br>
+<strong>발행년도:</strong> 2017<br>
+<strong>링크:</strong> <a href="https://arxiv.org/abs/1707.06347">https://arxiv.org/abs/1707.06347</a></p>
+<hr>
+<h2 id="문제-정의">문제 정의<a hidden class="anchor" aria-hidden="true" href="#문제-정의">#</a></h2>
+<p>정책경사(Policy Gradient) 계열은 (1) 데이터 효율/안정성이 떨어지거나(바닐라 PG), (2) 안정성은 좋지만 구현과 제약이 복잡(TRPO)하다는 trade-off가 있다.</p>
+<ul>
+<li><strong>바닐라 PG</strong>: 동일한 샘플로 여러 번 업데이트하면 policy shift가 커져 성능이 무너질 수 있음.</li>
+<li><strong>TRPO</strong>: surrogate objective를 <strong>KL 제약</strong> 하에서 최적화하여 안정성을 확보하지만, 2차 근사/CG/라인서치 등 구현이 복잡.</li>
+</ul>
+<p>PPO는 <strong>TRPO의 안정성에 가까운 업데이트</strong>를, <strong>1차 최적화(Adam + minibatch)</strong> 만으로 쉽게 구현하는 것을 목표로 한다.</p>
+<hr>
+<h2 id="핵심-기여">핵심 기여<a hidden class="anchor" aria-hidden="true" href="#핵심-기여">#</a></h2>
+<ul>
+<li><strong>Clipped Surrogate Objective</strong>로 큰 정책 업데이트를 억제하면서도, 동일한 배치로 <strong>여러 epoch 업데이트</strong>를 가능하게 함.</li>
+<li>다양한 벤치마크에서 <strong>샘플 효율·단순성·벽시계시간</strong> 균형이 좋음을 보임.</li>
+</ul>
+<hr>
+<h2 id="방법론">방법론<a hidden class="anchor" aria-hidden="true" href="#방법론">#</a></h2>
+<h3 id="a-trpo-스타일-ratio-surrogate">(A) TRPO 스타일 ratio surrogate<a hidden class="anchor" aria-hidden="true" href="#a-trpo-스타일-ratio-surrogate">#</a></h3>
+<p>(r_t(\theta)=\pi_\theta(a_t\mid s_t)/\pi_{\theta_{old}}(a_t\mid s_t)) 로 두면, CPI surrogate:
+[
+L^{CPI}(\theta)=\mathbb{E}_t[r_t(\theta)\hat A_t]
+]</p>
+<h3 id="b-ppo-clipped-objective">(B) PPO clipped objective<a hidden class="anchor" aria-hidden="true" href="#b-ppo-clipped-objective">#</a></h3>
+<p>[
+L^{CLIP}(\theta)=\mathbb{E}_t[\min(r_t(\theta)\hat A_t,;\mathrm{clip}(r_t(\theta),1-\epsilon,1+\epsilon)\hat A_t)]
+]</p>
+<p align="center"><img src="images/1707.06347-fig1.jpeg" alt="PPO clipped surrogate term" style="max-width: 90%;"></p>
+<p align="center"><em>Figure 1. advantage 부호에 따라 확률비 r를 [1-ε, 1+ε] 범위로 clipping하여 surrogate term을 보수적으로 제한.</em></p>
+<p align="center"><img src="images/1707.06347-fig2.jpeg" alt="Surrogate objectives interpolation" style="max-width: 90%;"></p>
+<p align="center"><em>Figure 2. 업데이트 방향으로 보간할 때 surrogate 및 KL의 변화를 비교. L^CLIP이 L^CPI에 대한 보수적 하한처럼 동작.</em></p>
+<h3 id="c-actor-critic-결합-valueentropy">(C) Actor-Critic 결합 (Value/Entropy)<a hidden class="anchor" aria-hidden="true" href="#c-actor-critic-결합-valueentropy">#</a></h3>
+<p>[
+L(\theta)=\mathbb{E}_t[L^{CLIP}_t(\theta) - c_1 L^{VF}_t(\theta) + c_2 S<a href="s_t">\pi_\theta</a>]
+]</p>
+<p>Advantage는 TD residual과 (truncated) GAE로 계산:
+[
+\delta_t=r_t+\gamma V(s_{t+1})-V(s_t),\quad
+\hat A_t=\delta_t+(\gamma\lambda)\delta_{t+1}+\cdots
+]</p>
+<p>학습은 N actor × T steps rollout으로 NT 샘플을 모은 뒤, 같은 배치로 K epochs 동안 minibatch(크기 M) Adam/SGD.</p>
+<hr>
+<h2 id="실험-결과">실험 결과<a hidden class="anchor" aria-hidden="true" href="#실험-결과">#</a></h2>
+<p align="center"><img src="images/1707.06347-fig3.jpeg" alt="MuJoCo comparison" style="max-width: 95%;"></p>
+<p align="center"><em>Figure 3. 여러 MuJoCo 환경에서 알고리즘 비교. PPO가 전반적으로 강한 성능/안정성.</em></p>
+<p align="center"><img src="images/1707.06347-fig4.jpeg" alt="Roboschool humanoid learning curves" style="max-width: 95%;"></p>
+<p align="center"><em>Figure 4. Roboschool humanoid 3D 과제에서 PPO 학습 곡선.</em></p>
+<p align="center"><img src="images/1707.06347-fig5.jpeg" alt="Humanoid still frames" style="max-width: 95%;"></p>
+<p align="center"><em>Figure 5. 학습된 정책의 스틸 프레임(qualitative).</em></p>
+<p align="center"><img src="images/1707.06347-fig6.jpeg" alt="Atari PPO vs A2C" style="max-width: 95%;"></p>
+<p align="center"><em>Figure 6. Atari 49개 게임에서 PPO와 A2C 비교(샘플 효율 관점).</em></p>
+<hr>
+<h2 id="계산구현-포인트">계산/구현 포인트<a hidden class="anchor" aria-hidden="true" href="#계산구현-포인트">#</a></h2>
+<ul>
+<li>TRPO 대비: 2차 근사/CG/라인서치 없이 <strong>일반적인 딥러닝 학습 루프</strong>로 구현 가능.</li>
+<li>안정성은 주로 (\epsilon), epoch 수 K, minibatch 크기 M, 그리고 advantage 추정((\gamma,\lambda))에 민감.</li>
+<li>실무에서는 KL 모니터링(또는 KL 기반 early stop)을 추가하면 안정화에 도움이 된다.</li>
+</ul>
+<hr>
+<h2 id="한계--주의점">한계 / 주의점<a hidden class="anchor" aria-hidden="true" href="#한계--주의점">#</a></h2>
+<ul>
+<li>clipping이 trust region을 완벽 대체하는 것은 아니며, (\epsilon) 및 data reuse(K)가 과하면 여전히 불안정 가능.</li>
+<li>on-policy 특성상 환경 상호작용 비용이 큰 문제에서는 샘플 효율 한계가 존재.</li>
+</ul>
+<hr>
+<h2 id="인사이트">인사이트<a hidden class="anchor" aria-hidden="true" href="#인사이트">#</a></h2>
+<ul>
+<li>PPO는 “고정된 배치로 여러 번 학습하고 싶은” 엔지니어링 요구를, TRPO의 아이디어를 유지하면서도 매우 단순한 형태로 풀어낸 해법.</li>
+<li>ratio clipping은 gradient 신호를 특정 구간에서 잘라내 업데이트 폭을 제한하는 강력한 규제(reg.)로 동작.</li>
+</ul>
+<hr>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<ul>
+<li>PPO: <a href="https://arxiv.org/abs/1707.06347">https://arxiv.org/abs/1707.06347</a></li>
+<li>TRPO: <a href="https://arxiv.org/abs/1502.05477">https://arxiv.org/abs/1502.05477</a></li>
+<li>GAE: <a href="https://arxiv.org/abs/1506.02438">https://arxiv.org/abs/1506.02438</a></li>
+<li>A3C: <a href="https://arxiv.org/abs/1602.01783">https://arxiv.org/abs/1602.01783</a></li>
+<li>ACER: <a href="https://arxiv.org/abs/1611.01224">https://arxiv.org/abs/1611.01224</a></li>
+<li>DQN: <a href="https://www.nature.com/articles/nature14236">https://www.nature.com/articles/nature14236</a></li>
+</ul>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:54972/tags/paper-review/">Paper Review</a></li>
+      <li><a href="http://localhost:54972/tags/reinforcement-learning/">Reinforcement Learning</a></li>
+      <li><a href="http://localhost:54972/tags/policy-gradient/">Policy Gradient</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:54972/posts/attention-is-all-you-need/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Attention Is All You Need 요약</span>
+  </a>
+  <a class="next" href="http://localhost:54972/posts/skillrl-evolving-agents/">
+    <span class="title">Next »</span>
+    <br>
+    <span>SkillRL: Evolving Agents via Recursive Skill-Augmented Reinforcement Learning 요약</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:54972/">mori-blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

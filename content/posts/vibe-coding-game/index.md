@@ -1,7 +1,6 @@
 ---
 title: "Vibe Coding으로 만드는 웹 게임"
 date: 2025-07-15T11:30:03+00:00
-weight: 1
 # aliases: ["/first"]
 tags: ["Game", "Vibe Coding"]
 author: "mori"

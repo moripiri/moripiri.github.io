@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>NLP on mori-blog</title>
+    <link>http://localhost:54972/tags/nlp/</link>
+    <description>Recent content in NLP on mori-blog</description>
+    <image>
+      <title>mori-blog</title>
+      <url>http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.155.3</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 17 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:54972/tags/nlp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Attention Is All You Need 요약</title>
+      <link>http://localhost:54972/posts/attention-is-all-you-need/</link>
+      <pubDate>Tue, 17 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:54972/posts/attention-is-all-you-need/</guid>
+      <description>RNN/CNN을 완전히 제거하고 오직 Attention만으로 sequence transduction을 수행하는 Transformer 아키텍처 제안</description>
+    </item>
+  </channel>
+</rss>

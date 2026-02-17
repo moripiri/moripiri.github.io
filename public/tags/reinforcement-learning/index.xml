@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Reinforcement Learning on mori-blog</title>
+    <link>http://localhost:54972/tags/reinforcement-learning/</link>
+    <description>Recent content in Reinforcement Learning on mori-blog</description>
+    <image>
+      <title>mori-blog</title>
+      <url>http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:54972/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.155.3</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 17 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:54972/tags/reinforcement-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Proximal Policy Optimization Algorithms 요약</title>
+      <link>http://localhost:54972/posts/proximal-policy-optimization-algorithms/</link>
+      <pubDate>Tue, 17 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:54972/posts/proximal-policy-optimization-algorithms/</guid>
+      <description>TRPO의 안정성과 구현 단순성을 동시에 노린 clipped surrogate objective 기반의 on-policy policy gradient 알고리즘(PPO) 요약</description>
+    </item>
+    <item>
+      <title>SkillRL: Evolving Agents via Recursive Skill-Augmented Reinforcement Learning 요약</title>
+      <link>http://localhost:54972/posts/skillrl-evolving-agents/</link>
+      <pubDate>Mon, 16 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:54972/posts/skillrl-evolving-agents/</guid>
+      <description>LLM 에이전트가 원시 궤적을 재사용 가능한 스킬로 증류하고, RL 학습 중 스킬 라이브러리와 정책이 공동 진화하는 SkillRL 프레임워크</description>
+    </item>
+  </channel>
+</rss>
